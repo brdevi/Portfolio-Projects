@@ -28,6 +28,7 @@ export default function Accordian() {
   console.log(selected, multiple);
   return (
     <div className="wrapper">
+      <h1 style={{ color: "#000000" }}>Project1 - Accordian</h1>
       <button onClick={() => setEnableMultiSelection(!enableMultiSelection)}>
         Enable Multi Selection
       </button>
