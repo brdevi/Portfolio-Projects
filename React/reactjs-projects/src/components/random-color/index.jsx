@@ -1,37 +1,52 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+
 export default function RandomColor() {
   const [typeOfColor, setTypeOfColor] = useState("hex");
   const [color, setColor] = useState("#000000");
 
+  // Utility function to generate a random value (used for RGB/HEX)
   function randomColorUtility(length) {
     return Math.floor(Math.random() * length);
   }
 
-  function handleCreateRandomHexColor() {
-    //#691451
-    const hex = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "E", "F"];
-
-    let hexColor = "#";
-
-    for (let i = 0; i < 6; i++) {
-      hexColor += hex[randomColorUtility(hex.length)];
+  // Memoize the handleCreateRandomColor function with useCallback
+  const handleCreateRandomColor = useCallback((type) => {
+    if (type === "hex") {
+      const hex = [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+      ];
+      let hexColor = "#";
+      for (let i = 0; i < 6; i++) {
+        hexColor += hex[randomColorUtility(hex.length)];
+      }
+      setColor(hexColor);
+    } else if (type === "rgb") {
+      const r = randomColorUtility(256);
+      const g = randomColorUtility(256);
+      const b = randomColorUtility(256);
+      setColor(`rgb(${r}, ${g}, ${b})`);
     }
+  }, []); // Empty dependency array means the function is memoized and won't change
 
-    setColor(hexColor);
-  }
-
-  function handleCreateRandomRgbColor() {
-    const r = randomColorUtility(256);
-    const g = randomColorUtility(256);
-    const b = randomColorUtility(256);
-
-    setColor(`rgb(${r},${g},${b})`);
-  }
-
+  // Set the initial color when the page loads
   useEffect(() => {
-    if (typeOfColor === "rgb") handleCreateRandomRgbColor();
-    else handleCreateRandomHexColor();
-  }, [typeOfColor]);
+    handleCreateRandomColor(typeOfColor);
+  }, [typeOfColor, handleCreateRandomColor]); // Add handleCreateRandomColor to the dependency array
 
   return (
     <div
@@ -41,19 +56,21 @@ export default function RandomColor() {
         background: color,
       }}
     >
-      {" "}
       <h1 style={{ color: "#ffffff" }}>Project2 - Random Color Generator</h1>
+
       <button onClick={() => setTypeOfColor("hex")}>Create HEX Color</button>
       <button onClick={() => setTypeOfColor("rgb")}>Create RGB Color</button>
+
       <button
-        onClick={
-          typeOfColor === "hex"
-            ? handleCreateRandomHexColor
-            : handleCreateRandomRgbColor
-        }
+        onClick={() => handleCreateRandomColor(typeOfColor)}
+        style={{
+          backgroundColor: color, // Show the current color as the button background
+          color: typeOfColor === "hex" ? "#000000" : "#ffffff", // Adjust text color for readability
+        }}
       >
         Generate Random Color
       </button>
+
       <div
         style={{
           display: "flex",
