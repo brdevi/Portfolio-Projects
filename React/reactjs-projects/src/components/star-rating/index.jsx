@@ -17,7 +17,7 @@ export default function StarRating({ noOfStars = 10 }) {
   }
   return (
     <div className="star-rating">
-      <h1 style={{ color: "#ffffff" }}>Project3 - StarRating</h1>
+      <h1 style={{ color: "#000000" }}>Project3 - StarRating</h1>
       {[...Array(noOfStars)].map((_, index) => {
         index += 1;
 
